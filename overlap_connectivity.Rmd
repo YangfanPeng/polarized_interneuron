@@ -1,0 +1,142 @@
+---
+title: "overlap_connectivity"
+output: html_notebook
+---
+
+#Import libraries and dataset
+```{r}
+library(readxl)
+library(ggplot2)
+library(data.table)
+library('gmodels')
+library(svglite)
+toverlap_import <- read_excel("IN_overlap_connect.xlsx")
+```
+
+#Analysis of FS
+Plot boxplot of overlap scores for different connection groups. Fig 2E
+```{r}
+toverlap = toverlap_import[toverlap_import$subtype == "FS",]
+
+bp<-ggplot(toverlap,aes(x=connectivity, y=overlap))+
+  geom_boxplot()+ylab("FS axonal overlap score")
+bp
+```
+
+Plot fraction of pairs with high vs low overlap, and inhibition vs no inhibition. Fig 2F
+```{r}
+#set overlap threshold
+toverlap$high <- toverlap$overlap>0.1
+
+#fraction of excitatory pairs (high vs low overlap)
+mytable <- table(toverlap$excitation,toverlap$high)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("Overlap > 0.1")+ylab("FS relative fraction")+
+  scale_fill_brewer(palette="Reds")
+bp
+
+#fraction of reciprocal pairs (high vs low overlap)
+mytable <- table(toverlap$reciprocity,toverlap$high)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("Overlap > 0.1")+ylab("FS relative fraction")+
+  scale_fill_brewer(palette="PuRd")
+bp
+
+#fraction of excitatory pairs (with vs without inhibition)
+mytable <- table(toverlap$excitation,toverlap$inhibition)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("inhibition")+ylab("FS relative fraction")+
+  scale_fill_brewer(palette="Reds")
+bp
+
+#fraction of reciprocal pairs (with vs without inhibition)
+mytable <- table(toverlap$reciprocity,toverlap$inhibition)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("inhibition")+ylab("FS relative fraction")+
+  scale_fill_brewer(palette="PuRd")
+bp
+```
+
+#Repeat analysis for NFS 
+Plot boxplot of overlap scores for different connection groups. Fig S2B
+```{r}
+toverlap = toverlap_import[toverlap_import$subtype == "NFS",]
+
+bp<-ggplot(toverlap,aes(x=connectivity, y=overlap))+
+  geom_boxplot()+ylab("NFS axonal overlap score")
+bp
+```
+
+Plot fraction of pairs with high vs low overlap, and inhibition vs no inhibition. Fig S2C
+```{r}
+#set overlap threshold
+toverlap$high <- toverlap$overlap>0.1
+
+#fraction of excitatory pairs (high vs low overlap)
+mytable <- table(toverlap$excitation,toverlap$high)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("Overlap > 0.1")+ylab("NFS relative fraction")+
+  scale_fill_brewer(palette="Reds")
+bp
+
+#fraction of reciprocal pairs (high vs low overlap)
+mytable <- table(toverlap$reciprocity,toverlap$high)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("Overlap > 0.1")+ylab("NFS relative fraction")+
+  scale_fill_brewer(palette="PuRd")
+bp
+
+#fraction of excitatory pairs (with vs without inhibition)
+mytable <- table(toverlap$excitation,toverlap$inhibition)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("inhibition")+ylab("NFS relative fraction")+
+  scale_fill_brewer(palette="Reds")
+bp
+
+#fraction of reciprocal pairs (with vs without inhibition)
+mytable <- table(toverlap$reciprocity,toverlap$inhibition)
+mytable
+fisher.test(mytable)
+
+relfreq <- data.table(mytable)
+bp <- ggplot(relfreq, aes(x=V2, y=N, fill=V1)) +
+      geom_bar(width=1,stat="identity",position = 'fill')+
+  xlab("inhibition")+ylab("NFS relative fraction")+
+  scale_fill_brewer(palette="PuRd")
+bp
+```
